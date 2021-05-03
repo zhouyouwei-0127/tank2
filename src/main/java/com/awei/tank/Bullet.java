@@ -77,11 +77,6 @@ public class Bullet extends AbstractGameObject {
         }
     }
     
-    //碰撞检测
-    public void collidesWithTank(Tank tank) {
-        
-    }
-
     public Rectangle getRect() {
         return rect;
     }
@@ -89,6 +84,5 @@ public class Bullet extends AbstractGameObject {
     public void die() {
         this.setLive(false);
     }
-    
     
 }
