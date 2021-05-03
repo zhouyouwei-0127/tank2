@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.Random;
 
 @Data
-public class Tank {
+public class Tank extends AbstractGameObject {
 
     private int x;
     private int y;
@@ -19,6 +19,7 @@ public class Tank {
     private Random random = new Random();
     private int oldX, oldY;
     private int width, height;
+    private Rectangle rect;
 
     public Tank(int x, int y, Dir dir, Group group) {
         this.x = x;
@@ -28,6 +29,7 @@ public class Tank {
 
         this.width = ResourceMgr.goodTankU.getWidth();
         this.height = ResourceMgr.goodTankU.getHeight();
+        rect = new Rectangle(x, y, width, height);
     }
 
     public void paint(Graphics g) {
@@ -49,6 +51,8 @@ public class Tank {
                 break;
         }
         move();
+        rect.x = x;
+        rect.y = y;
 
         if (random.nextInt(100) > 90) {
             fire();
@@ -58,7 +62,7 @@ public class Tank {
     private void fire() {
         int bx = x + ResourceMgr.goodTankU.getWidth() / 2 - ResourceMgr.bulletU.getWidth() / 2;
         int by = y + ResourceMgr.goodTankU.getHeight() / 2 - ResourceMgr.bulletU.getHeight() / 2;
-        TankFrame.INSTANCE.bullets.add(new Bullet(bx, by, dir, group));
+        TankFrame.INSTANCE.add(new Bullet(bx, by, dir, group));
     }
 
     private void move() {
@@ -97,13 +101,21 @@ public class Tank {
     
     private void boundsCheck() {
         if (x < 0 || y < 30 || x + width > TankFrame.GAME_WIDTH || y + height > TankFrame.GAME_HEIGHT) {
-            x = oldX;
-            y = oldY;
+            this.back();
         }
+    }
+
+    public void back() {
+        x = oldX;
+        y = oldY;
     }
     
     public void die() {
         live = false;
-        TankFrame.INSTANCE.explodes.add(new Explode(x, y));
+        TankFrame.INSTANCE.add(new Explode(x, y));
+    }
+
+    public Rectangle getRect() {
+        return rect;
     }
 }

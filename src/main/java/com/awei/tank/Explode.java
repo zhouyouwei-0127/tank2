@@ -5,7 +5,7 @@ import lombok.Data;
 import java.awt.*;
 
 @Data
-public class Explode {
+public class Explode extends AbstractGameObject {
     
     private int x, y;
     private boolean live = true;

@@ -5,19 +5,23 @@ import lombok.Data;
 import java.awt.*;
 
 @Data
-public class Bullet {
+public class Bullet extends AbstractGameObject {
     
     private int x, y;
+    private int w = ResourceMgr.bulletU.getWidth();
+    private int h = ResourceMgr.bulletU.getHeight();
     private static final int SPEED = 6;
     private Dir dir;
     private Group group;
     private boolean live = true;
+    private Rectangle rect;
 
     public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
+        rect = new Rectangle(x, y, w, h);
     }
 
     public void paint(Graphics g) {
@@ -36,6 +40,15 @@ public class Bullet {
                 break;
         }
         move();
+
+        rect.x = this.x;
+        rect.y = this.y;
+        
+        //子弹的rect
+        /*Color c = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.drawRect(rect.x, rect.y, rect.width, rect.height);
+        g.setColor(c);*/
     }
 
     private void move() {
@@ -66,19 +79,16 @@ public class Bullet {
     
     //碰撞检测
     public void collidesWithTank(Tank tank) {
-        if (!this.isLive() || !tank.isLive()) return;
         
-        if (this.group == tank.getGroup()) return;
-        
-        Rectangle rect = new Rectangle(x, y, ResourceMgr.bulletU.getWidth(), ResourceMgr.bulletU.getHeight());
-        Rectangle rectTank = new Rectangle(tank.getX(), tank.getY(), ResourceMgr.goodTankU.getWidth(), ResourceMgr.goodTankU.getHeight());
-        if (rect.intersects(rectTank)) {
-            this.die();
-            tank.die();
-        }
     }
 
-    private void die() {
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    public void die() {
         this.setLive(false);
     }
+    
+    
 }

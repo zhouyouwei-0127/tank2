@@ -1,12 +1,13 @@
 package com.awei.tank;
 
+import com.awei.tank.strategy.FireStrategy;
 import lombok.Data;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
 @Data
-public class Player {
+public class Player extends AbstractGameObject {
 
     private int x;
     private int y;
@@ -17,11 +18,14 @@ public class Player {
     private boolean moving;
     private boolean live = true;
 
+    private FireStrategy strategy = null;
+
     public Player(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
+        initFireStrategy();
     }
 
     public void paint(Graphics g) {
@@ -107,10 +111,17 @@ public class Player {
         setDir();
     }
 
+    private void initFireStrategy() {
+        try {
+            Class<?> clazz = Class.forName("com.awei.tank.strategy." + PropertyMgr.get("tankFireStrategy"));
+            strategy = (FireStrategy) clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     private void fire() {
-        int bx = x + ResourceMgr.goodTankU.getWidth() / 2 - ResourceMgr.bulletU.getWidth() / 2;
-        int by = y + ResourceMgr.goodTankU.getHeight() / 2 - ResourceMgr.bulletU.getHeight() / 2;
-        TankFrame.INSTANCE.bullets.add(new Bullet(bx, by, dir, group));
+        strategy.fire(this);
     }
 
     private void move() {

@@ -1,3 +1,4 @@
+import com.awei.tank.PropertyMgr;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -6,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Properties;
 
 public class MyTest {
     
@@ -46,5 +48,20 @@ public class MyTest {
         graphics2d.drawImage(bufferedimage, 0, 0, null);
         graphics2d.dispose();
         return img;
+    }
+
+    @Test
+    public void testConf() {
+        Properties prop = new Properties();
+        try {
+            prop.load(MyTest.class.getClassLoader().getResourceAsStream("config"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String str = (String) prop.get("initTankCount");
+        System.out.println(str);
+        String initTankCount = PropertyMgr.get("initTankCount");
+        System.out.println(initTankCount);
     }
 }

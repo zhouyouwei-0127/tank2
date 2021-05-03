@@ -1,5 +1,7 @@
 package com.awei.tank;
 
+import com.awei.tank.chainofresponsebility.ColliderChain;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -11,9 +13,9 @@ public class TankFrame extends Frame {
     public static final TankFrame INSTANCE = new TankFrame();
     public static final int GAME_WIDTH = 1200, GAME_HEIGHT = 900; //窗口的宽高
     private Player myTank;
-    private List<Tank> tanks;
-    public List<Bullet> bullets;
-    public List<Explode> explodes;
+    private List<AbstractGameObject> objects;
+    private ColliderChain chain = new ColliderChain();
+    
 
     private TankFrame() {
         this.setTitle("tank war");
@@ -24,50 +26,44 @@ public class TankFrame extends Frame {
         initGameObjects();
     }
 
+    
+
     private void initGameObjects() {
         myTank = new Player(100,50, Dir.R, Group.GOOD);
-        bullets = new ArrayList<>();
-        tanks = new ArrayList<>();
-        explodes = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            tanks.add(new Tank(100 + i * 50, 200, Dir.D, Group.BAD));
+        objects = new ArrayList<>();
+
+        Integer initTankCount = Integer.parseInt(PropertyMgr.get("initTankCount"));
+        for (int i = 0; i < initTankCount; i++) {
+            this.add(new Tank(200 + i * 50, 400, Dir.D, Group.BAD));
         }
+
+        this.add(new Wall(300, 200, 400, 50));
+    }
+
+    public void add(AbstractGameObject go) {
+        objects.add(go);
     }
 
     @Override
     public void paint(Graphics g) {
         Color color = g.getColor();
         g.setColor(Color.WHITE);
-        g.drawString("bullet：" + bullets.size(), 10, 50);
-        g.drawString("tanks：" + tanks.size(), 10, 70);
-        g.drawString("explodes：" + explodes.size(), 10, 90);
+        g.drawString("objects：" + objects.size(), 10, 50);
         g.setColor(color);
         myTank.paint(g);
-        
-        for (int i = 0; i < tanks.size(); i++) {
-            if (!tanks.get(i).isLive()) {
-                tanks.remove(i);
-            } else {
-                tanks.get(i).paint(g);
-            }
-        }
-        for (int i = 0; i < bullets.size(); i++) {
-            for (int j = 0; j < tanks.size(); j++) {
-                bullets.get(i).collidesWithTank(tanks.get(j));
-            }
-            
-            if (!bullets.get(i).isLive()) {
-                bullets.remove(i);
-            } else {
-                bullets.get(i).paint(g);
-            }
-        }
 
-        for (int i = 0; i < explodes.size(); i++) {
-            if (!explodes.get(i).isLive()) {
-                explodes.remove(i);
-            } else {
-                explodes.get(i).paint(g);
+        for (int i = 0; i < objects.size(); i++) {
+            if (!objects.get(i).isLive()) {
+                objects.remove(i);
+                break;
+            }
+            AbstractGameObject go1 = objects.get(i);
+            for (int j = 0; j < objects.size(); j++) {
+                AbstractGameObject go2 = objects.get(j);
+                chain.collide(go1, go2);
+            }
+            if (objects.get(i).isLive()) {
+                objects.get(i).paint(g);
             }
         }
     }
