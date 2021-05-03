@@ -5,6 +5,8 @@ import com.awei.tank.Bullet;
 import com.awei.tank.Tank;
 import com.awei.tank.Wall;
 
+import java.io.Serializable;
+
 public class TankWallCollider implements Collider {
     @Override
     public boolean collide(AbstractGameObject go1, AbstractGameObject go2) {

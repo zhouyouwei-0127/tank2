@@ -2,6 +2,8 @@ package com.awei.tank.chainofresponsebility;
 
 import com.awei.tank.AbstractGameObject;
 
-public interface Collider {
+import java.io.Serializable;
+
+public interface Collider extends Serializable {
     boolean collide(AbstractGameObject go1, AbstractGameObject go2);
 }

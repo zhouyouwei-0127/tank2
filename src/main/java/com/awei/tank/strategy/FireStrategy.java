@@ -2,6 +2,8 @@ package com.awei.tank.strategy;
 
 import com.awei.tank.Player;
 
-public interface FireStrategy {
+import java.io.Serializable;
+
+public interface FireStrategy extends Serializable {
     void fire(Player p);
 }

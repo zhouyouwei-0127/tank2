@@ -6,6 +6,7 @@ import com.awei.tank.ResourceMgr;
 import com.awei.tank.Tank;
 
 import java.awt.*;
+import java.io.Serializable;
 
 public class BulletTankCollider implements Collider {
     @Override

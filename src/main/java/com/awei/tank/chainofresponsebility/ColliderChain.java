@@ -3,10 +3,11 @@ package com.awei.tank.chainofresponsebility;
 import com.awei.tank.AbstractGameObject;
 import com.awei.tank.PropertyMgr;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ColliderChain implements Collider {
+public class ColliderChain implements Collider{
     private List<Collider> colliders;
 
     public ColliderChain() {
